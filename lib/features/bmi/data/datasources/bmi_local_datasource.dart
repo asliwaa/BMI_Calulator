@@ -14,14 +14,17 @@ class BmiLocalDatasourceImpl implements BmiLocalDatasource {
     required double height,
   }) async {
 
+    //Convert height to meters
     final heightInMeters = height/100;
 
     if(heightInMeters <= 0) {
       throw Exception('Height must be greater than 0');
     }
 
+    //BMI formula
     final bmi = weight / (heightInMeters * heightInMeters);
 
+    //Determine weight category
     BmiCategory category;
     if(bmi < 18.5) { category = BmiCategory.underweight;}
     else if (bmi < 25) {category = BmiCategory.normal;}

@@ -14,14 +14,17 @@ class BmiGauge extends StatelessWidget {
           minimum: 10,
           maximum: 40,
           ranges: <GaugeRange> [
+            //Color ranges
             GaugeRange(startValue: 10, endValue: 18.5, color: Colors.blue, label: "Underweight"),
             GaugeRange(startValue: 18.5, endValue: 25, color: Colors.green, label: "Normal"),
             GaugeRange(startValue: 25, endValue: 30, color: Colors.orange, label: "Overweight"),
             GaugeRange(startValue: 30, endValue: 40, color: Colors.red, label: "Obesity"),
           ],
+          //Points to the calculated value
           pointers: <GaugePointer>[
             NeedlePointer(value: bmiResult.bmiValue),
           ],
+          //Display bmi value and category
           annotations: <GaugeAnnotation>[
             GaugeAnnotation(
               widget: Column (

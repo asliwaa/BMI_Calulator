@@ -9,13 +9,15 @@ final serviceLocator = GetIt.instance;
 
 Future<void> init() async {
   //BLoC
+  //Factory -> new instance for every request
   serviceLocator.registerFactory(() => BmiBloc(calculateBmiUseCase: serviceLocator()),);
   //Use cases
+  //LazySingleton -> one instance which is reused
   serviceLocator.registerLazySingleton(() => CalculateBmiUseCase(serviceLocator()),);
   //Repository
   serviceLocator.registerLazySingleton<BmiRepository> (() => BmiRepositoryImpl(localDatasource: serviceLocator()),);
   //Data sources
   serviceLocator.registerLazySingleton<BmiLocalDatasource> (() => BmiLocalDatasourceImpl(),);
-  
+
 
 }

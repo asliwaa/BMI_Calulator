@@ -15,6 +15,7 @@ class BmiPage extends StatelessWidget {
         title: const Text('BMI Calculator'),
         centerTitle: true,
       ),
+      //Injects BLoC using ServiceLocator -> makes BmiBloc available to widget tree
       body: BlocProvider(
         create: (_) => serviceLocator<BmiBloc>(),
         child: SingleChildScrollView(
@@ -26,6 +27,7 @@ class BmiPage extends StatelessWidget {
 
               const SizedBox(height: 30),
 
+              //rebuild ui based on the current state
               BlocBuilder<BmiBloc, BmiState>(
                 builder: (context, state) {
                   if (state.status == BmiStatus.loading) {

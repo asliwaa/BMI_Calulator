@@ -16,15 +16,15 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'BMI Calculator',
-      debugShowCheckedModeBanner: false, // Usuwamy pasek "Debug"
+      debugShowCheckedModeBanner: false,
       
       theme: ThemeData.dark().copyWith(
         primaryColor: AppColors.background,
-        scaffoldBackgroundColor: AppColors.background, // Tło całego ekranu
+        scaffoldBackgroundColor: AppColors.background,
         
         appBarTheme: const AppBarTheme(
           backgroundColor: AppColors.background,
-          elevation: 0, // Płaski, bez cienia
+          elevation: 0,
           centerTitle: true,
         ),
         

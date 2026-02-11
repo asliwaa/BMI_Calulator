@@ -33,6 +33,7 @@ class BmiControls extends StatelessWidget {
             
             const SizedBox(height: 20),
 
+            // WEIGHT and HEIHT panels
             Row(
               children: [
                 Expanded(
@@ -60,7 +61,7 @@ class BmiControls extends StatelessWidget {
             
             const SizedBox(height: 30),
             
-            // PRZYCISK OBLICZ
+            //CALCULATE BMI button
             GestureDetector(
               onTap: () {
                 context.read<BmiBloc>().add(CalculateBmiPressed());
@@ -78,7 +79,7 @@ class BmiControls extends StatelessWidget {
                 ),
                 child: const Center(
                   child: Text(
-                    "OBLICZ BMI",
+                    "CALCULATE BMI",
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white, letterSpacing: 1.5),
                   ),
                 ),
@@ -91,6 +92,7 @@ class BmiControls extends StatelessWidget {
   }
 }
 
+//Widget template for weight and height panels
 class _ControlPanel extends StatelessWidget {
   final String label;
   final String unit;
@@ -135,35 +137,32 @@ class _ControlPanel extends StatelessWidget {
             ),
             const SizedBox(height: 15),
             
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                _RoundButton(
-                  icon: Icons.keyboard_double_arrow_left, 
-                  onPressed: () => onChanged(value - stepLarge),
-                ),
-                
-                const SizedBox(width: 10),
-
-                _RoundButton(
-                  icon: Icons.remove, 
-                  onPressed: () => onChanged(value - stepSmall),
-                ),
-                
-                const SizedBox(width: 20),
-
-                _RoundButton(
-                  icon: Icons.add, 
-                  onPressed: () => onChanged(value + stepSmall),
-                ),
-                
-                const SizedBox(width: 10),
-
-                _RoundButton(
-                  icon: Icons.keyboard_double_arrow_right, 
-                  onPressed: () => onChanged(value + stepLarge),
-                ),
-              ],
+            FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  _RoundButton(
+                    icon: Icons.keyboard_double_arrow_left, 
+                    onPressed: () => onChanged(value - stepLarge),
+                  ),
+                  const SizedBox(width: 5),
+                  _RoundButton(
+                    icon: Icons.remove, 
+                    onPressed: () => onChanged(value - stepSmall),
+                  ),
+                  const SizedBox(width: 10),
+                  _RoundButton(
+                    icon: Icons.add, 
+                    onPressed: () => onChanged(value + stepSmall),
+                  ),
+                  const SizedBox(width: 5),
+                  _RoundButton(
+                    icon: Icons.keyboard_double_arrow_right, 
+                    onPressed: () => onChanged(value + stepLarge),
+                  ),
+                ],
+              ),
             ),
           ],
         ),
@@ -172,6 +171,7 @@ class _ControlPanel extends StatelessWidget {
   }
 }
 
+//Round button
 class _RoundButton extends StatelessWidget {
   final IconData icon;
   final VoidCallback onPressed;
@@ -183,7 +183,7 @@ class _RoundButton extends StatelessWidget {
     return RawMaterialButton(
       elevation: 0,
       onPressed: onPressed,
-      constraints: const BoxConstraints.tightFor(width: 45.0, height: 45.0),
+      constraints: const BoxConstraints.tightFor(width: 40.0, height: 40.0),
       shape: const CircleBorder(),
       fillColor: AppColors.buttonGray,
       child: Icon(icon, color: Colors.white),

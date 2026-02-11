@@ -11,26 +11,33 @@ class BmiBloc extends Bloc<BmiEvent, BmiState> {
   final CalculateBmiUseCase calculateBmiUseCase;
 
   BmiBloc ({required this.calculateBmiUseCase}) : super(const BmiState()) {
+    //Updated the weight in the state
     on<WeightChanged>((event, emit) {
       emit(state.copyWith(weight: event.weight, status: BmiStatus.initial));
     });
 
+    //Updates the weight in the state
     on<HeightChanged>((event, emit) {
       emit(state.copyWith(height: event.height, status: BmiStatus.initial));
     });
 
+    // Handles switching between Metric and Imperial systems
+    // Converts the current input values so the user doesn't lose data
     on<UnitSystemChanged>((event, emit) {
       double newWeight;
       double newHeight;
 
       if (state.isMetric) {
+        //Metric -> Imperial
         newWeight = state.weight * 2.20462;
         newHeight = state.height / 2.54;
       } else {
+        //Imperial -> Metric
         newWeight = state.weight / 2.20462;
         newHeight = state.height * 2.54;
       }
 
+      //Round up
       newWeight = double.parse(newWeight.toStringAsFixed(2));
       newHeight = double.parse(newHeight.toStringAsFixed(2));
 
@@ -42,12 +49,14 @@ class BmiBloc extends Bloc<BmiEvent, BmiState> {
       ));
     });
 
+    //Triggered after CALCULATE BMI button is pressed
     on<CalculateBmiPressed>((event, emit) async {
       emit(state.copyWith(status: BmiStatus.loading));
 
       double weightToSend = state.weight;
       double heightToSend = state.height;
 
+      //Converts to metric before sending data to calculate bmi
       if(!state.isMetric) {
         weightToSend = state.weight / 2.20462;
         heightToSend = state.height * 2.54;
