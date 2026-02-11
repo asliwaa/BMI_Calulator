@@ -1,25 +1,39 @@
 import 'package:flutter/material.dart';
 import 'injection_container.dart' as di;
 import 'features/bmi/presentation/pages/bmi_page.dart';
+import 'core/app_colors.dart'; // Import kolorów
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
   await di.init();
-
-  runApp(const BmiCalculatorApp());
+  runApp(const MyApp());
 }
 
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
-class BmiCalculatorApp extends StatelessWidget {
-  const BmiCalculatorApp({super.key});
-
-  @override Widget build(BuildContext context) {
+  @override
+  Widget build(BuildContext context) {
     return MaterialApp(
       title: 'BMI Calculator',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
+      debugShowCheckedModeBanner: false, // Usuwamy pasek "Debug"
+      
+      theme: ThemeData.dark().copyWith(
+        primaryColor: AppColors.background,
+        scaffoldBackgroundColor: AppColors.background, // Tło całego ekranu
+        
+        appBarTheme: const AppBarTheme(
+          backgroundColor: AppColors.background,
+          elevation: 0, // Płaski, bez cienia
+          centerTitle: true,
+        ),
+        
+        cardTheme: CardThemeData(
+          color: AppColors.cardBackground,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+        ),
       ),
+      
       home: const BmiPage(),
     );
   }

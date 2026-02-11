@@ -20,7 +20,26 @@ class BmiBloc extends Bloc<BmiEvent, BmiState> {
     });
 
     on<UnitSystemChanged>((event, emit) {
-      emit(state.copyWith(isMetric: !state.isMetric));
+      double newWeight;
+      double newHeight;
+
+      if (state.isMetric) {
+        newWeight = state.weight * 2.20462;
+        newHeight = state.height / 2.54;
+      } else {
+        newWeight = state.weight / 2.20462;
+        newHeight = state.height * 2.54;
+      }
+
+      newWeight = double.parse(newWeight.toStringAsFixed(2));
+      newHeight = double.parse(newHeight.toStringAsFixed(2));
+
+      emit(state.copyWith(
+        isMetric: !state.isMetric,
+        weight: newWeight,     
+        height: newHeight, 
+        status: BmiStatus.initial,
+      ));
     });
 
     on<CalculateBmiPressed>((event, emit) async {
@@ -30,7 +49,7 @@ class BmiBloc extends Bloc<BmiEvent, BmiState> {
       double heightToSend = state.height;
 
       if(!state.isMetric) {
-        weightToSend = state.weight * 0.0453592;
+        weightToSend = state.weight / 2.20462;
         heightToSend = state.height * 2.54;
       }
 

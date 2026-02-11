@@ -12,7 +12,7 @@ class BmiPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('BMI Calculatr'),
+        title: const Text('BMI Calculator'),
         centerTitle: true,
       ),
       body: BlocProvider(

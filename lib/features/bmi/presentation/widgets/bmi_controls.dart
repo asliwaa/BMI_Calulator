@@ -1,55 +1,91 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../core/app_colors.dart';
 import '../bloc/bmi_bloc.dart';
 
 class BmiControls extends StatelessWidget {
   const BmiControls({Key? key}) : super(key: key);
 
-  @override Widget build(BuildContext context) {
+  @override
+  Widget build(BuildContext context) {
     return BlocBuilder<BmiBloc, BmiState>(
       builder: (context, state) {
         return Column(
           children: [
-            SwitchListTile(
-              title: const Text("Metric units (kg/cm)"),
-              value: state.isMetric,
-              onChanged: (_) => context.read<BmiBloc>().add(UnitSystemChanged()),  
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 16),
+              decoration: BoxDecoration(
+                color: AppColors.cardBackground,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: SwitchListTile(
+                title: Text(
+                  state.isMetric 
+                      ? "METRIC (kg / cm)" 
+                      : "IMPERIAL (lbs / inch)",
+                  style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+                ),
+                activeColor: AppColors.accent,
+                value: state.isMetric,
+                onChanged: (_) => context.read<BmiBloc>().add(UnitSystemChanged()),
+              ),
             ),
+            
             const SizedBox(height: 20),
 
-            //Weight
-            _ControlPanel(
-              label: "Weight (${state.isMetric ? 'kg' : 'lbs'})",
-              value: state.weight,
-              onChanged: (val) => context.read<BmiBloc>().add(WeightChanged(val)),
-              stepSmall: 0.1,
-              stepLarge: 1.0,
+            Row(
+              children: [
+                Expanded(
+                  child: _ControlPanel(
+                    label: "WEIGHT",
+                    unit: state.isMetric ? "kg" : "lbs",
+                    value: state.weight,
+                    onChanged: (val) => context.read<BmiBloc>().add(WeightChanged(val)),
+                    stepSmall: 0.1,
+                    stepLarge: 1.0,
+                  ),
+                ),
+                Expanded(
+                  child: _ControlPanel(
+                    label: "HEIGHT",
+                    unit: state.isMetric ? "cm" : "in",
+                    value: state.height,
+                    onChanged: (val) => context.read<BmiBloc>().add(HeightChanged(val)),
+                    stepSmall: 1.0,
+                    stepLarge: 10.0,
+                  ),
+                ),
+              ],
             ),
-
-            const SizedBox(height: 20),
-
-            //Height
-            _ControlPanel(
-              label: "Height (${state.isMetric ? 'cm' : 'inch'})",
-              value: state.height,
-              onChanged: (val) => context.read<BmiBloc>().add(HeightChanged(val)),
-              stepSmall: 1.0,
-              stepLarge: 10.0,
-            ),
-
+            
             const SizedBox(height: 30),
-
-            ElevatedButton(
-              onPressed: () {
+            
+            // PRZYCISK OBLICZ
+            GestureDetector(
+              onTap: () {
                 context.read<BmiBloc>().add(CalculateBmiPressed());
               },
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+              child: Container(
+                margin: const EdgeInsets.symmetric(horizontal: 16),
+                width: double.infinity,
+                height: 60,
+                decoration: BoxDecoration(
+                  color: AppColors.accent,
+                  borderRadius: BorderRadius.circular(10),
+                  boxShadow: [
+                    BoxShadow(color: AppColors.accent.withOpacity(0.5), blurRadius: 10, offset: const Offset(0, 5))
+                  ]
+                ),
+                child: const Center(
+                  child: Text(
+                    "OBLICZ BMI",
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white, letterSpacing: 1.5),
+                  ),
+                ),
               ),
-              child: const Text("CALCULATE BMI", style: TextStyle(fontSize: 18)),
             ),
           ],
-          );
+        );
       },
     );
   }
@@ -57,6 +93,7 @@ class BmiControls extends StatelessWidget {
 
 class _ControlPanel extends StatelessWidget {
   final String label;
+  final String unit;
   final double value;
   final Function(double) onChanged;
   final double stepSmall;
@@ -64,6 +101,7 @@ class _ControlPanel extends StatelessWidget {
 
   const _ControlPanel({
     required this.label,
+    required this.unit,
     required this.value,
     required this.onChanged,
     required this.stepSmall,
@@ -72,45 +110,83 @@ class _ControlPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 16),
+    return Container(
+      margin: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        color: AppColors.cardBackground,
+        borderRadius: BorderRadius.circular(15),
+      ),
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.symmetric(vertical: 20.0),
         child: Column(
           children: [
-            Text(label, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            Text(label, style: const TextStyle(color: AppColors.textSecondary, fontSize: 15)),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.baseline,
+              textBaseline: TextBaseline.alphabetic,
+              children: [
+                Text(
+                  value.toStringAsFixed(1),
+                  style: const TextStyle(fontSize: 40, fontWeight: FontWeight.w900, color: Colors.white),
+                ),
+                Text(unit, style: const TextStyle(color: AppColors.textSecondary)),
+              ],
+            ),
+            const SizedBox(height: 15),
+            
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // Minusy
-                IconButton(icon: const Icon(Icons.keyboard_double_arrow_left), onPressed: () => onChanged(value - stepLarge)),
-                IconButton(icon: const Icon(Icons.remove), onPressed: () => onChanged(value - stepSmall)),
-                
-                // Wyświetlacz wartości (Input)
-                SizedBox(
-                  width: 100,
-                  child: TextFormField(
-                    // Klucz sprawia, że pole odświeży się, gdy zmieni się wartość w stanie
-                    key: Key(value.toString()), 
-                    initialValue: value.toStringAsFixed(1),
-                    keyboardType: TextInputType.number,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-                    onChanged: (val) {
-                      final parsed = double.tryParse(val);
-                      if (parsed != null) onChanged(parsed);
-                    },
-                  ),
+                _RoundButton(
+                  icon: Icons.keyboard_double_arrow_left, 
+                  onPressed: () => onChanged(value - stepLarge),
                 ),
+                
+                const SizedBox(width: 10),
 
-                // Plusy
-                IconButton(icon: const Icon(Icons.add), onPressed: () => onChanged(value + stepSmall)),
-                IconButton(icon: const Icon(Icons.keyboard_double_arrow_right), onPressed: () => onChanged(value + stepLarge)),
+                _RoundButton(
+                  icon: Icons.remove, 
+                  onPressed: () => onChanged(value - stepSmall),
+                ),
+                
+                const SizedBox(width: 20),
+
+                _RoundButton(
+                  icon: Icons.add, 
+                  onPressed: () => onChanged(value + stepSmall),
+                ),
+                
+                const SizedBox(width: 10),
+
+                _RoundButton(
+                  icon: Icons.keyboard_double_arrow_right, 
+                  onPressed: () => onChanged(value + stepLarge),
+                ),
               ],
             ),
           ],
         ),
       ),
+    );
+  }
+}
+
+class _RoundButton extends StatelessWidget {
+  final IconData icon;
+  final VoidCallback onPressed;
+
+  const _RoundButton({required this.icon, required this.onPressed});
+
+  @override
+  Widget build(BuildContext context) {
+    return RawMaterialButton(
+      elevation: 0,
+      onPressed: onPressed,
+      constraints: const BoxConstraints.tightFor(width: 45.0, height: 45.0),
+      shape: const CircleBorder(),
+      fillColor: AppColors.buttonGray,
+      child: Icon(icon, color: Colors.white),
     );
   }
 }
