@@ -1,7 +1,7 @@
 import 'package:bmi_calculator/features/bmi/domain/entities/bmi.dart';
 import 'package:bmi_calculator/features/bmi/domain/entities/bmi_category.dart';
 import 'package:bmi_calculator/features/bmi/domain/repositories/bmi_repository.dart';
-import 'package:bmi_calculator/features/bmi/domain/usecases/calulate_bmi_usecase.dart';
+import 'package:bmi_calculator/features/bmi/domain/usecases/calculate_bmi_usecase.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';

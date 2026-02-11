@@ -19,7 +19,7 @@ class BmiState extends Equatable {
   const BmiState({
     this.weight = 70.0,
     this.height = 170.0,
-    this.isMetric = false,
+    this.isMetric = true,
     this.status = BmiStatus.initial,
     this.bmiResult,
     this.errorMessage,

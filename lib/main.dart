@@ -5,12 +5,14 @@ import 'features/bmi/presentation/pages/bmi_page.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  await di.init();
+
   runApp(const BmiCalculatorApp());
 }
 
 
-class MyBmiCalculatorApp extends StatelessWidget {
-  const MyBmiCalculatorApp({super.key});
+class BmiCalculatorApp extends StatelessWidget {
+  const BmiCalculatorApp({super.key});
 
   @override Widget build(BuildContext context) {
     return MaterialApp(
@@ -18,7 +20,7 @@ class MyBmiCalculatorApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const BmiPage();
+      home: const BmiPage(),
     );
   }
 }

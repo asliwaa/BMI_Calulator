@@ -2,7 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
 import '../../domain/entities/bmi.dart';
-import '../../domain/usecases/calulate_bmi_usecase.dart';
+import '../../domain/usecases/calculate_bmi_usecase.dart';
 
 part 'bmi_event.dart';
 part 'bmi_state.dart';
