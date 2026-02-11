@@ -33,7 +33,7 @@ void main () {
       when(() => mockBmiRepository.calculateBmi(weightKg: tWeight, heightCm: tHeight))
       .thenAnswer((_) async => const Right(tBmiResult));
       //act
-      final result = await useCase.execute(weight: tWeight, height: tHeight);
+      final result = await useCase(BmiParams(weight: tWeight, height: tHeight));
       //assert
       expect(result, Right(tBmiResult));
 
