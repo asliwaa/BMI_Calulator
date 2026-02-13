@@ -1,3 +1,5 @@
+import 'package:bmi_calculator/core/app_colors.dart';
+import 'package:bmi_calculator/features/bmi/presentation/pages/history_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../injection_container.dart';
@@ -14,6 +16,22 @@ class BmiPage extends StatelessWidget {
       appBar: AppBar(
         title: const Text('BMI Calculator'),
         centerTitle: true,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.history, color: AppColors.accent),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => BlocProvider.value(
+                    value: context.read<BmiBloc>(),
+                    child: const HistoryPage(),
+                  ),
+                ),
+              );
+            },
+          ),
+        ],
       ),
       //Injects BLoC using ServiceLocator -> makes BmiBloc available to widget tree
       body: BlocProvider(

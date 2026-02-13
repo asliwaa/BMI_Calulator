@@ -11,6 +11,7 @@ class BmiState extends Equatable {
   final double weight;
   final double height;
   final UnitSystem unitSystem;
+  final List<BmiHistoryRecord> history;
 
   final BmiStatus status;
   final Bmi? bmiResult;
@@ -23,6 +24,7 @@ class BmiState extends Equatable {
     this.status = BmiStatus.initial,
     this.bmiResult,
     this.errorMessage,
+    this.history = const [],
   });
 
   BmiState copyWith({
@@ -31,7 +33,8 @@ class BmiState extends Equatable {
     UnitSystem? unitSystem,
     BmiStatus? status,
     Bmi? bmiResult,
-    String? errorMessage,
+    String? errorMessage, 
+    List<BmiHistoryRecord>? history,
   }) {
     return BmiState(
       weight: weight ?? this.weight,
@@ -40,6 +43,7 @@ class BmiState extends Equatable {
       status: status ?? this.status,
       bmiResult: bmiResult ?? this.bmiResult,
       errorMessage: errorMessage ?? this.errorMessage,
+      history: history ?? this.history,
     );
   }
 
@@ -49,7 +53,8 @@ class BmiState extends Equatable {
     unitSystem,
     status,
     bmiResult,
-    errorMessage
+    errorMessage,
+    history
   ];
 
   bool get isMetric => unitSystem == UnitSystem.metric;

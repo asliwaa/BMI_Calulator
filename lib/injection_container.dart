@@ -6,6 +6,7 @@ import 'features/bmi/domain/usecases/calculate_bmi_usecase.dart';
 import 'features/bmi/presentation/bloc/bmi_bloc.dart';
 import 'features/bmi/data/datasources/bmi_history_datasource.dart';
 import 'features/bmi/domain/usecases/convert_values_usecase.dart';
+import 'features/bmi/domain/usecases/get_history_usecase.dart';
 
 final serviceLocator = GetIt.instance;
 
@@ -14,13 +15,15 @@ Future<void> init() async {
   //Factory -> new instance for every request
   serviceLocator.registerFactory(() => BmiBloc(
       calculateBmiUseCase: serviceLocator(),
-      convertValuesUseCase: serviceLocator(),
+      convertValuesUseCase: serviceLocator(), 
+      getHistoryUseCase: serviceLocator(),
     ),
   );
   //Use cases
   //LazySingleton -> one instance which is reused
   serviceLocator.registerLazySingleton(() => CalculateBmiUseCase(serviceLocator()));
   serviceLocator.registerLazySingleton(() => ConvertValuesUseCase());
+  serviceLocator.registerLazySingleton(() => GetHistoryUseCase(serviceLocator()));
   //Repository
   serviceLocator.registerLazySingleton<BmiRepository> (() => BmiRepositoryImpl(
       localDatasource: serviceLocator(),

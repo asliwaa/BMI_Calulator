@@ -1,9 +1,12 @@
 import 'package:bloc/bloc.dart';
+import 'package:bmi_calculator/features/bmi/domain/usecases/get_history_usecase.dart';
 import 'package:equatable/equatable.dart';
 import '../../../../core/enums/unit_system.dart';
 import '../../domain/entities/bmi.dart';
 import '../../domain/usecases/calculate_bmi_usecase.dart';
 import '../../domain/usecases/convert_values_usecase.dart';
+import '../../domain/entities/bmi_history_record.dart';
+import '../../domain/usecases/get_history_usecase.dart';
 
 part 'bmi_event.dart';
 part 'bmi_state.dart';
@@ -11,10 +14,12 @@ part 'bmi_state.dart';
 class BmiBloc extends Bloc<BmiEvent, BmiState> {
   final CalculateBmiUseCase calculateBmiUseCase;
   final ConvertValuesUseCase convertValuesUseCase;
+  final GetHistoryUseCase getHistoryUseCase;
 
   BmiBloc({
     required this.calculateBmiUseCase,
     required this.convertValuesUseCase,
+    required this.getHistoryUseCase,
   }) : super(const BmiState()) {
     
     on<WeightChanged>((event, emit) {
@@ -64,6 +69,14 @@ class BmiBloc extends Bloc<BmiEvent, BmiState> {
           status: BmiStatus.success,
           bmiResult: bmi,
         )),
+      );
+    });
+
+    on<LoadHistory>((event, emit) async {
+    final result = await getHistoryUseCase(NoParams());
+    result.fold(
+        (failure) => print("History loading error"),
+        (records) => emit(state.copyWith(history: records)),
       );
     });
   }

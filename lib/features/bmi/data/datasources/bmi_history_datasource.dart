@@ -5,6 +5,8 @@ import '../../../../core/enums/unit_system.dart';
 
 abstract class BmiHistoryDataSource {
   Future<void> saveResult(Bmi bmi, double weight, double height, UnitSystem unitSystem);
+
+  Future<List<Map<String, dynamic>>> getHistory();
 }
 
 class BmiHistoryDataSourceImpl implements BmiHistoryDataSource {
@@ -46,5 +48,11 @@ class BmiHistoryDataSourceImpl implements BmiHistoryDataSource {
       'height': height,
       'unit_system': unitSystem.toString(),
     });
+  }
+
+  @override
+  Future<List<Map<String, dynamic>>> getHistory() async {
+    final db = await database;
+    return await db.query('history', orderBy: 'id DESC');
   }
 }

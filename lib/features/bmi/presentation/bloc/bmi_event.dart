@@ -23,3 +23,5 @@ class HeightChanged extends BmiEvent {
 class UnitSystemChanged extends BmiEvent {}
 
 class CalculateBmiPressed extends BmiEvent {}
+
+class LoadHistory extends BmiEvent {}
