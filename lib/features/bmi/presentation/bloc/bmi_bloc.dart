@@ -1,80 +1,69 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-
+import '../../../../core/enums/unit_system.dart';
 import '../../domain/entities/bmi.dart';
 import '../../domain/usecases/calculate_bmi_usecase.dart';
+import '../../domain/usecases/convert_values_usecase.dart';
 
 part 'bmi_event.dart';
 part 'bmi_state.dart';
 
 class BmiBloc extends Bloc<BmiEvent, BmiState> {
   final CalculateBmiUseCase calculateBmiUseCase;
+  final ConvertValuesUseCase convertValuesUseCase;
 
-  BmiBloc ({required this.calculateBmiUseCase}) : super(const BmiState()) {
-    //Updated the weight in the state
+  BmiBloc({
+    required this.calculateBmiUseCase,
+    required this.convertValuesUseCase,
+  }) : super(const BmiState()) {
+    
     on<WeightChanged>((event, emit) {
       emit(state.copyWith(weight: event.weight, status: BmiStatus.initial));
     });
 
-    //Updates the weight in the state
     on<HeightChanged>((event, emit) {
       emit(state.copyWith(height: event.height, status: BmiStatus.initial));
     });
 
-    // Handles switching between Metric and Imperial systems
-    // Converts the current input values so the user doesn't lose data
     on<UnitSystemChanged>((event, emit) {
-      double newWeight;
-      double newHeight;
+      final newSystem = state.unitSystem == UnitSystem.metric 
+          ? UnitSystem.imperial 
+          : UnitSystem.metric;
 
-      if (state.isMetric) {
-        //Metric -> Imperial
-        newWeight = state.weight * 2.20462;
-        newHeight = state.height / 2.54;
-      } else {
-        //Imperial -> Metric
-        newWeight = state.weight / 2.20462;
-        newHeight = state.height * 2.54;
-      }
-
-      //Round up
-      newWeight = double.parse(newWeight.toStringAsFixed(2));
-      newHeight = double.parse(newHeight.toStringAsFixed(2));
+      final converted = convertValuesUseCase(
+        weight: state.weight,
+        height: state.height,
+        targetSystem: newSystem,
+      );
 
       emit(state.copyWith(
-        isMetric: !state.isMetric,
-        weight: newWeight,     
-        height: newHeight, 
+        unitSystem: newSystem,
+        weight: double.parse(converted.weight.toStringAsFixed(2)),
+        height: double.parse(converted.height.toStringAsFixed(2)),
         status: BmiStatus.initial,
       ));
     });
 
-    //Triggered after CALCULATE BMI button is pressed
     on<CalculateBmiPressed>((event, emit) async {
       emit(state.copyWith(status: BmiStatus.loading));
 
-      double weightToSend = state.weight;
-      double heightToSend = state.height;
-
-      //Converts to metric before sending data to calculate bmi
-      if(!state.isMetric) {
-        weightToSend = state.weight / 2.20462;
-        heightToSend = state.height * 2.54;
-      }
-
-      final params = BmiParams(weight: weightToSend, height: heightToSend);
+      final params = BmiParams(
+        weight: state.weight,
+        height: state.height,
+        unitSystem: state.unitSystem,
+      );
 
       final result = await calculateBmiUseCase(params);
 
       result.fold(
         (failure) => emit(state.copyWith(
           status: BmiStatus.failure,
-          errorMessage: "Calculation Error"
+          errorMessage: "Calculation error",
         )),
         (bmi) => emit(state.copyWith(
           status: BmiStatus.success,
-          bmiResult: bmi
-        ))
+          bmiResult: bmi,
+        )),
       );
     });
   }

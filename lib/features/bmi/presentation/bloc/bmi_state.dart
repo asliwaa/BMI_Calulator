@@ -10,7 +10,7 @@ enum BmiStatus {
 class BmiState extends Equatable {
   final double weight;
   final double height;
-  final bool isMetric;
+  final UnitSystem unitSystem;
 
   final BmiStatus status;
   final Bmi? bmiResult;
@@ -19,7 +19,7 @@ class BmiState extends Equatable {
   const BmiState({
     this.weight = 70.0,
     this.height = 170.0,
-    this.isMetric = true,
+    this.unitSystem = UnitSystem.metric,
     this.status = BmiStatus.initial,
     this.bmiResult,
     this.errorMessage,
@@ -28,7 +28,7 @@ class BmiState extends Equatable {
   BmiState copyWith({
     double? weight,
     double? height,
-    bool? isMetric,
+    UnitSystem? unitSystem,
     BmiStatus? status,
     Bmi? bmiResult,
     String? errorMessage,
@@ -36,7 +36,7 @@ class BmiState extends Equatable {
     return BmiState(
       weight: weight ?? this.weight,
       height: height ?? this.height,
-      isMetric: isMetric ?? this.isMetric,
+      unitSystem: unitSystem?? this.unitSystem,
       status: status ?? this.status,
       bmiResult: bmiResult ?? this.bmiResult,
       errorMessage: errorMessage ?? this.errorMessage,
@@ -46,9 +46,11 @@ class BmiState extends Equatable {
   @override List<Object?> get props => [
     weight,
     height,
-    isMetric,
+    unitSystem,
     status,
     bmiResult,
     errorMessage
   ];
+
+  bool get isMetric => unitSystem == UnitSystem.metric;
 }
